@@ -19,7 +19,18 @@
                             <label class="form-label" for="description">Description</label>
                             <input class="form-control" id="description" name="description" value="@if(isset($tasks)) {{$tasks->description}} @endif">
                         </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label" for="status">Status</label>
+                            <select class="form-control" id="status" name="status" value="@if(isset($tasks)) {{$tasks->status}} @endif">
+                                <option @if(isset($tasks)) {{ $tasks->status == 'PENDING' ? 'selected' : '' }} @endif>PENDING</option>
+                                <option @if(isset($tasks)) {{ $tasks->status == 'IN-PROGRESS' ? 'selected' : '' }} @endif>IN-PROGRESS</option>
+                                <option @if(isset($tasks)) {{ $tasks->status == 'COMPLETED' ? 'selected' : '' }} @endif>COMPLETED</option>
+                            </select>
+                        </div>
                         <div class="mb-2">
+                            <a class="btn btn-outline-secondary" href="{{ route('tasks.index') }}">
+                                <i class="fa fa-home"></i> &nbsp; Back
+                            </a>
                             <button class="btn btn-outline-success" type="submit">
                                 @csrf
                                 <i class="fa fa-save"></i> &nbsp; 

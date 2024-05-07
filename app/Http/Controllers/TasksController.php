@@ -36,6 +36,7 @@ class TasksController extends Controller
         $tasks->title = $request->input('title');
         $tasks->description = $request->input('description');
         $tasks->user_id = Auth::id();
+        $tasks->status = $request->input('status');
         $tasks->save();
         return redirect()->route('tasks.index')->with('success', 'Task successfully saved');
     }
@@ -57,6 +58,7 @@ class TasksController extends Controller
         if ($user->role == 'Admin' || $task->user_id == $user->id) {
             $task->title = $request->input('title');
             $task->description = $request->input('description');
+            $task->status = $request->input('status');
             $task->save();
             return redirect()->route('tasks.index')->with('success', 'Task successfully updated');
         } else {

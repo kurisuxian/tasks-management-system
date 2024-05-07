@@ -9,10 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id()->unique(); 
+            $table->id()->unique();
             $table->string('title');
             $table->string('description');
             $table->string('user_id');
+            $table->string('status');
             $table->timestamps();
         });
     }

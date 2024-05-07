@@ -32,6 +32,7 @@
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -39,9 +40,17 @@
                             @if(isset($tasks))
                                 @foreach ($tasks as $task)
                                     <tr>
-                                        <td>{{$task->title}}</td>
-                                        <td>{{$task->description}}</td>
-                                        <td class="d-flex justify-content-center">
+                                        <td class="align-middle">{{$task->title}}</td>
+                                        <td class="align-middle">{{$task->description}}</td>
+                                        <td class="align-middle">
+                                            <span class="badge rounded-pill
+                                                @if($task->status == 'PENDING') bg-dark
+                                                @elseif($task->status == 'IN-PROGRESS') bg-primary
+                                                @elseif($task->status == 'COMPLETED') bg-success
+                                                @endif
+                                            ">{{$task->status}}</span>
+                                        </td>
+                                        <td class="d-flex justify-content-center align-middle">
                                             <a class="btn btn-outline-primary m-1" href="{{'tasks/' . $task->id . '/edit'}}">
                                                 <i class="fa fa-edit"></i> &nbsp; Edit
                                             </a>
