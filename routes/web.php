@@ -21,6 +21,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/tasks', [TasksController::class, 'index'])->name('tasks.index');
+Route::get('/tasks/list', [TasksController::class, 'getTasks'])->name('tasks.list');
 Route::get('/tasks/create', [TasksController::class, 'create'])->name('tasks.create');
 Route::post('/tasks', [TasksController::class, 'store'])->name('tasks.store');
 Route::get('/tasks/{tasks}/edit', [TasksController::class, 'show'])->name('tasks.edit');

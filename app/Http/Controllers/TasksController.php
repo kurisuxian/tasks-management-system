@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tasks;
 use App\Models\User;
+use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,13 +17,25 @@ class TasksController extends Controller
 
     public function index()
     {
-        $user = User::find(Auth::id());
-        if ($user->role == 'Admin') {
-            $tasks = Tasks::all();
-        } else {
-            $tasks = Tasks::all()->where('user_id', $user->id);
+        return view('tasks.index');
+    }
+
+    public function getTasks(Request $request)
+    {
+        if ($request->ajax()) {
+            if (Auth::user()->role == 'Admin') {
+                $data = Tasks::all();
+            } else {
+                $data = Tasks::all()->where('user_id', Auth::user()->id);
+            }
+            $data = $data->sortByDesc(function ($task) {
+                return $task->created_at;
+            });
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->make(true);
+
         }
-        return view('tasks.index')->with('tasks', $tasks);
     }
 
     public function create()
@@ -40,12 +53,12 @@ class TasksController extends Controller
         $tasks->save();
         return redirect()->route('tasks.index')->with('success', 'Task successfully saved');
     }
+
     public function show($id)
     {
-        $tasks = Tasks::find($id);
-        $user = User::find(Auth::id());
-        if ($user->role == 'Admin' || $user->id == $tasks->user_id) {
-            return view('/tasks/create')->with('tasks', $tasks);
+        $task = Tasks::find($id);
+        if (Auth::user()->role == 'Admin' || Auth::user()->id == $task->user_id) {
+            return view('/tasks/edit')->with('tasks', $task);
         } else {
             return redirect()->route('tasks.index')->with('error', 'Access Denied: Unauthorized Person');
         }
@@ -54,8 +67,7 @@ class TasksController extends Controller
     public function update(Request $request, $id)
     {
         $task = Tasks::find($id);
-        $user = User::find(Auth::id());
-        if ($user->role == 'Admin' || $task->user_id == $user->id) {
+        if (Auth::user()->role == 'Admin' || Auth::user()->id == $task->user_id) {
             $task->title = $request->input('title');
             $task->description = $request->input('description');
             $task->status = $request->input('status');
@@ -69,8 +81,7 @@ class TasksController extends Controller
     public function destroy($id)
     {
         $task = Tasks::find($id);
-        $user = User::find(Auth::id());
-        if ($user->role == 'Admin' || $task->user_id == $user->id) {
+        if (Auth::user()->role == 'Admin' || Auth::user()->id == $task->user_id) {
             $task->delete();
             return redirect()->route('tasks.index')->with('success', 'Task successfully deleted');
         } else {
